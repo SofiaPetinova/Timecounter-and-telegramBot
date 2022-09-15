@@ -59,6 +59,15 @@ bot.setMyCommands( [
                 totalTime += timeDuration(intervals[i]);
             }
 
+            let rate = 0;
+            for(let i = 0; i < chats.length; i++) {
+                if(chats[i].chatId === chatId) {
+                    rate = chats[i].rate;
+                }
+            }
+
+
+
 
         }
 
