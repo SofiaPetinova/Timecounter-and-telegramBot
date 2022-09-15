@@ -13,6 +13,7 @@
     "mocha": "^10.0.0"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.59.0"
+    "node-telegram-bot-api": "^0.59.0",
+    "nodemon": "^2.0.19"
   }
 }

@@ -1,5 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
-const {timeDuration} = require('./index');
+const { intervalDuration } = require('./index');
 
 const token = '5532680312:AAFX9V-I7M6YhAA88yoMkv_z5Rs69D4f-QQ';
 
@@ -11,7 +11,7 @@ bot.setMyCommands( [
     {command: '/start', description: 'To begin count you work time press /start'},
     {command: '/rate', description: 'To get current rate press /rate'},
     {command: '/finish', description: 'To stop count your work time, press /finish'}
-])
+]);
 
     bot.on('message', (msg) => {
         const chatId = msg.chat.id;
@@ -20,20 +20,28 @@ bot.setMyCommands( [
             chats.push({
                 chatId, rate: null,
                 intervals: []
-            })
+            });
         }
+        console.log(chats)
 
         if(msg.text.startsWith('rate')){
             const rate = msg.text.split(' ')[1]
-            // const rateNumber = +rate
-            // if(isNan(rateNumber)) {
-            //     bot.sendMessage(chatId, 'Please enter a number' )
-            // }
+            const rateNumber = +rate;
+            if(isNaN(rateNumber)) {
+                bot.sendMessage(chatId, 'Please enter a number')
+                return;
+            }
+            else if (rateNumber <= 0) {
+                bot.sendMessage(chatId, 'Please enter a positive number');
+                return;
+            }
+
             for(let i = 0; i < chats.length; i++) {
                 if (chats[i].chatId === chatId){
                     chats[i].rate = rate;
                 }
             }
+            console.log(chats)
             bot.sendMessage(chatId, `Your rate is ${rate}`);
         }
 
@@ -44,6 +52,7 @@ bot.setMyCommands( [
                     chats[i].intervals.push(interval)
                 }
             }
+            console.log(chats)
         }
 
         if(msg.text === '/finish') {
@@ -56,7 +65,7 @@ bot.setMyCommands( [
 
             let totalTime = 0;
             for(let i = 0; i < intervals.length; i++) {
-                totalTime += timeDuration(intervals[i]);
+                totalTime += intervalDuration(intervals[i]);
             }
 
             let rate = 0;
@@ -66,11 +75,13 @@ bot.setMyCommands( [
                 }
             }
 
+            const totalAmount = +(totalTime / 60 * rate).toFixed(2);
 
+            const hours = Math.floor(totalTime / 60);
+            const minutes = totalTime % 60;
 
-
+            bot.sendMessage(chatId, `You worked ${hours} hours and ${minutes} minutes and earned ${totalAmount} $`)
         }
-
     });
 
 
